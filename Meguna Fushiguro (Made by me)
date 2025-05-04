@@ -1004,3 +1004,218 @@ end
  
 --[[END OF UPPERCUT ANIM]]
  
+--[[Punch anims]]
+ 
+humanoid.AnimationPlayed:Connect(onAnimationPlayed)
+ 
+ 
+local Players = game:GetService("Players")
+ 
+local player = Players.LocalPlayer
+ 
+local character = player.Character or player.CharacterAdded:Wait()
+ 
+local humanoid = character:WaitForChild("Humanoid")
+ 
+ 
+local animationIdsToStop = {
+ 
+    [17859015788] = true, --downslam finisher
+ 
+    [10469493270] = true, --punch1
+ 
+    [10469630950] = true, --punch2
+ 
+    [10469639222] = true, --punch3
+ 
+    [10469643643] = true, --punch4
+ 
+}
+ 
+ 
+local replacementAnimations = {
+ 
+    ["10469493270"] = "rbxassetid://18715994424", --punch1
+ 
+    ["10469630950"] = "rbxassetid://18716143973", --punch2
+ 
+    ["10469639222"] = "rbxassetid://114095570398448", --punch3
+ 
+    ["10469643643"] = "rbxassetid://16552234590", --punch4
+ 
+    ["17859015788"] = "rbxassetid://12684185971", --downslam finisher
+ 
+    ["11365563255"] = "rbxassetid://14516273501" --punch idk
+ 
+}
+ 
+ 
+local queue = {}
+ 
+local isAnimating = false
+ 
+ 
+local function playReplacementAnimation(animationId)
+ 
+    if isAnimating then
+ 
+        table.insert(queue, animationId)
+ 
+        return
+ 
+    end
+ 
+   
+ 
+    isAnimating = true
+ 
+    local replacementAnimationId = replacementAnimations[tostring(animationId)]
+ 
+    if replacementAnimationId then
+ 
+        local AnimAnim = Instance.new("Animation")
+ 
+        AnimAnim.AnimationId = replacementAnimationId
+ 
+        local Anim = humanoid:LoadAnimation(AnimAnim)
+ 
+        Anim:Play()
+ 
+       
+ 
+        Anim.Stopped:Connect(function()
+ 
+            isAnimating = false
+ 
+            if #queue > 0 then
+ 
+                local nextAnimationId = table.remove(queue, 1)
+ 
+                playReplacementAnimation(nextAnimationId)
+ 
+            end
+ 
+        end)
+ 
+    else
+ 
+        isAnimating = false
+ 
+    end
+ 
+end
+ 
+ 
+local function stopSpecificAnimations()
+ 
+    for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
+ 
+        local animationId = tonumber(track.Animation.AnimationId:match("%d+"))
+ 
+        if animationIdsToStop[animationId] then
+ 
+            track:Stop()
+ 
+        end
+ 
+    end
+ 
+end
+ 
+ 
+local function onAnimationPlayed(animationTrack)
+ 
+    local animationId = tonumber(animationTrack.Animation.AnimationId:match("%d+"))
+ 
+    if animationIdsToStop[animationId] then
+ 
+        stopSpecificAnimations()
+ 
+        animationTrack:Stop()
+ 
+       
+ 
+        local replacementAnimationId = replacementAnimations[tostring(animationId)]
+ 
+        if replacementAnimationId then
+ 
+            playReplacementAnimation(animationId)
+ 
+        end
+ 
+    end
+ 
+end
+ 
+ 
+humanoid.AnimationPlayed:Connect(onAnimationPlayed)
+ 
+ 
+local player = game.Players.LocalPlayer
+ 
+local character = player.Character or player.CharacterAdded:Wait()
+ 
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+ 
+ 
+local function onBodyVelocityAdded(bodyVelocity)
+ 
+    if bodyVelocity:IsA("BodyVelocity") then
+ 
+        bodyVelocity.Velocity = Vector3.new(bodyVelocity.Velocity.X, 0, bodyVelocity.Velocity.Z)
+ 
+    end
+ 
+end
+ 
+ 
+character.DescendantAdded:Connect(onBodyVelocityAdded)
+ 
+ 
+for _, descendant in pairs(character:GetDescendants()) do
+ 
+    onBodyVelocityAdded(descendant)
+ 
+end
+ 
+ 
+player.CharacterAdded:Connect(function(newCharacter)
+ 
+    character = newCharacter
+ 
+    humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+ 
+    character.DescendantAdded:Connect(onBodyVelocityAdded)
+ 
+   
+ 
+    for _, descendant in pairs(character:GetDescendants()) do
+ 
+        onBodyVelocityAdded(descendant)
+ 
+    end
+ 
+end) 
+
+--[[Execute Anims (Animations when you execute script]]
+ 
+local p = game.Players.LocalPlayer
+local Humanoid = p.Character:WaitForChild("Humanoid")
+ 
+for _, animTrack in pairs(Humanoid:GetPlayingAnimationTracks()) do
+    animTrack:Stop()
+end
+ 
+local AnimAnim = Instance.new("Animation")
+AnimAnim.AnimationId = "rbxassetid://13497875049" -- Replace with your animation ID
+ 
+local Anim = Humanoid:LoadAnimation(AnimAnim)
+ 
+local startTime = 0.05
+ 
+Anim:Play()
+Anim:AdjustSpeed(0)
+Anim.TimePosition = startTime
+Anim:AdjustSpeed(1)
+ 
+--[[END OF EXECUTE ANIMS]]
