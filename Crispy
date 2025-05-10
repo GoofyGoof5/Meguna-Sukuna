@@ -1,25 +1,3 @@
---Text above head
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-
-local JusticeLabel = Instance.new("BillboardGui", HumanoidRootPart)
-JusticeLabel.Size = UDim2.new(8, 0, 3, 0)
-JusticeLabel.StudsOffset = Vector3.new(0, 4, 0)
-JusticeLabel.AlwaysOnTop = true
-
-local JusticeText = Instance.new("TextLabel", JusticeLabel)
-JusticeText.Size = UDim2.new(1, 0, 1, 0)
-JusticeText.BackgroundTransparency = 1
-JusticeText.Text = "Strongest In History"
-JusticeText.TextColor3 = Color3.new(255, 0, 0)
-JusticeText.TextScaled = true
-JusticeText.Font = Enum.Font.Arial
-
--- End of text
-
 --Avatar Remover
 
 local hair = game.Players.LocalPlayer.Character.FakeHead
